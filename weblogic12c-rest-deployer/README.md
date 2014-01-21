@@ -23,7 +23,9 @@ This project exposes a REST service with a POST command that will take two argum
  - args: the Deployer arguments (see [documentation](http://docs.oracle.com/middleware/1212/wls/DEPGD/wldeployer.htm))
 
 **Example using cURL**
-<pre>curl -F "file=@hello-world.war" -F "args=-username weblogic -password welcome1 -deploy" http://weblogic:welcome1@localhost:7001/wlsdeployer/deployer</pre>
+<pre>$ curl -F "file=@hello-world.war" \ 
+   -F "args=-username weblogic -password welcome1 -deploy" \
+   http://weblogic:welcome1@localhost:7001/wlsdeployer/deployer</pre>
 
 **Know issue**
 The REST interface is securely protected and must be authenticated using an account under Administrators group in the default 'myrealm'. The Deployer command-line 'args' must also include username and password of the administrator account to deploy the uploaded artifact.
