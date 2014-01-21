@@ -17,12 +17,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * REST Web Service
+ * REST Web Service wrapper for weblogic.Deployer utility
  *
  * @author bruno.borges@oracle.com
  */
 @Path("deployer")
-@RolesAllowed({"Administrators"})
 public class WebLogicDeployer {
 
     /**
@@ -47,16 +46,18 @@ public class WebLogicDeployer {
             tempFile = new File(tempDir, fileDetail.getFileName());
             writeTempFile(inputStream, tempFile);
 
+            Logger.getLogger(WebLogicDeployer.class.getName()).log(Level.INFO, "File received at: {0}", tempFile);
+
             // invokes WebLogic Deployer class
             exitValue = Runtime.getRuntime().exec("java weblogic.Deployer " + args + " " + tempFile.getAbsolutePath()).waitFor();
 
-            final File realTempFile = tempFile;
+            final File finalTempFile = tempFile;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         Thread.sleep(10 * 1000);
-                        realTempFile.delete();
+                        finalTempFile.delete();
                     } catch (InterruptedException ex) {
                         Logger.getLogger(WebLogicDeployer.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -69,20 +70,17 @@ public class WebLogicDeployer {
             Logger.getLogger(WebLogicDeployer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return Response.status(exitValue == 0 ? 200 : 500).entity("File received at: " + tempFile).build();
+        return Response.status(exitValue == 0 ? 200 : 500).build();
     }
 
     private void writeTempFile(InputStream uploadedInputStream,
             File tempUploadedFile) throws IOException {
 
-        OutputStream out;
         int read;
         byte[] bytes = new byte[1024];
-
-        out = new FileOutputStream(tempUploadedFile);
-        while ((read = uploadedInputStream.read(bytes)) != -1) {
+        OutputStream out = new FileOutputStream(tempUploadedFile);
+        while ((read = uploadedInputStream.read(bytes)) != -1)
             out.write(bytes, 0, read);
-        }
         out.flush();
         out.close();
     }
@@ -92,7 +90,9 @@ public class WebLogicDeployer {
 
         if (!tempDir.delete()) {
             throw new IOException("Unable to delete temp file: " + tempDir.getAbsolutePath());
-        } else if (!tempDir.mkdir()) {
+        }
+        
+        if (!tempDir.mkdir()) {
             throw new IOException("Unable to create temp directory: " + tempDir.getAbsolutePath());
         }
 
