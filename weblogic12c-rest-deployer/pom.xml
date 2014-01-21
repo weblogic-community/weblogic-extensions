@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.oracle.weblogic</groupId>
+    <artifactId>weblogic12c-rest-deployer</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>weblogic12c-rest-deployer</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <weblogic.domainHome>/home/bruno/Work/tools/oracle/mw1212/user_projects/domains/base_domain</weblogic.domainHome>
+        <weblogic.user>weblogic</weblogic.user>
+        <weblogic.password>welcome1</weblogic.password>
+        <weblogic.adminurl>t3://localhost:7001</weblogic.adminurl>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <version>1.17.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.weblogic</groupId>
+            <artifactId>weblogic-maven-plugin</artifactId>
+            <version>12.1.2-0-0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.oracle.weblogic</groupId>
+                <artifactId>weblogic-maven-plugin</artifactId>
+                <version>12.1.2-0-0</version>
+                <configuration>
+                    <domainHome>${weblogic.domainHome}</domainHome>
+                    <adminurl>${weblogic.adminurl}</adminurl>
+                    <user>${weblogic.user}</user>
+                    <password>${weblogic.password}</password>
+                    <source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
+                    <targets>AdminServer</targets>
+                    <verbose>true</verbose>
+                    <name>wlsdeployer</name>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
