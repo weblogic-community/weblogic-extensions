@@ -10,7 +10,8 @@ How to install
  * Edit pom.xml properly to match your AdminServer configuration (user/pass/url)
  * Make sure to deploy this application only to the AdminServer
  * Make sure your target AdminServer of WebLogic 12c is running
- ** If it is not running, call the following command: $ mvn com.oracle.weblogic:weblogic-maven-plugin:start-server
+  * If it is not running, call the following command: 
+  <pre>$ mvn com.oracle.weblogic:weblogic-maven-plugin:start-server</pre>
  * Build the project and it will be automatically deployed, by calling
 <pre>$ mvn package</pre>
 
