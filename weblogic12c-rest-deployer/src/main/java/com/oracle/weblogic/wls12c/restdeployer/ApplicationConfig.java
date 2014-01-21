@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.oracle.weblogic.wls12c.restdeployer;
 
 import java.util.Set;
@@ -10,7 +5,7 @@ import javax.ws.rs.core.Application;
 
 /**
  *
- * @author bruno
+ * @author bruno.borges@oracle.com
  */
 @javax.ws.rs.ApplicationPath("rest")
 public class ApplicationConfig extends Application {

@@ -5,10 +5,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>WebLogic REST Deployer</title>
+        <title>WebLogic 12c REST Deployer</title>
     </head>
     <body>
-        <h1>WebLogic REST Deployer</h1>
+        <h1>WebLogic 12c REST Deployer</h1>
         <form action="rest/deployer" method="post" enctype="multipart/form-data">
             <p>
                 Select your deployable artifact (.war, .ear, .jar, etc): <input type="file" name="file" size="45" />
