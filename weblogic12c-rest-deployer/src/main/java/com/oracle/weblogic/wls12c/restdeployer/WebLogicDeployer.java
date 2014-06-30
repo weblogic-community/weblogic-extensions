@@ -7,9 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,6 +25,9 @@ import javax.ws.rs.core.Response;
  */
 @Path("deployer")
 public class WebLogicDeployer {
+
+    @Inject
+    private WebLogicProperties wlsProps;
 
     /**
      * POST method for updating or creating an instance of WebLogicDeployer
@@ -40,7 +45,7 @@ public class WebLogicDeployer {
         Logger.getLogger(WebLogicDeployer.class.getName()).log(Level.INFO, "Arguments: {0}", args);
 
         int exitValue = -1;
-        File tempFile = null;
+        File tempFile;
         try {
             File tempDir = createTemporaryDirectory();
             tempFile = new File(tempDir, fileDetail.getFileName());
@@ -48,6 +53,13 @@ public class WebLogicDeployer {
 
             Logger.getLogger(WebLogicDeployer.class.getName()).log(Level.INFO, "File received at: {0}", tempFile);
 
+            // if args is null, use default operation: '-deploy'
+            if (args == null || args.trim().length() == 0) {
+                String user = wlsProps.getUser();
+                String pass = wlsProps.getPassword();
+                args = String.format("-username {0} -password {0} -deploy", user, pass);
+            }
+            
             // invokes WebLogic Deployer class
             exitValue = Runtime.getRuntime().exec("java weblogic.Deployer " + args + " " + tempFile.getAbsolutePath()).waitFor();
 
@@ -76,13 +88,14 @@ public class WebLogicDeployer {
     private void writeTempFile(InputStream uploadedInputStream,
             File tempUploadedFile) throws IOException {
 
-        int read;
-        byte[] bytes = new byte[1024];
-        OutputStream out = new FileOutputStream(tempUploadedFile);
-        while ((read = uploadedInputStream.read(bytes)) != -1)
-            out.write(bytes, 0, read);
-        out.flush();
-        out.close();
+        try (OutputStream out = new FileOutputStream(tempUploadedFile)) {
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = uploadedInputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+        }
     }
 
     private File createTemporaryDirectory() throws IOException {
@@ -91,7 +104,7 @@ public class WebLogicDeployer {
         if (!tempDir.delete()) {
             throw new IOException("Unable to delete temp file: " + tempDir.getAbsolutePath());
         }
-        
+
         if (!tempDir.mkdir()) {
             throw new IOException("Unable to create temp directory: " + tempDir.getAbsolutePath());
         }

@@ -15,6 +15,7 @@
         <weblogic.user>weblogic</weblogic.user>
         <weblogic.password>welcome1</weblogic.password>
         <weblogic.adminurl>t3://localhost:7001</weblogic.adminurl>
+        <weblogic.targets>myserver</weblogic.targets>
     </properties>
 
     <dependencies>
@@ -39,6 +40,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -54,6 +61,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <warName>wlsdeployer</warName>
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                 </configuration>
             </plugin>
@@ -67,7 +75,7 @@
                     <user>${weblogic.user}</user>
                     <password>${weblogic.password}</password>
                     <source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
-                    <targets>AdminServer</targets>
+                    <targets>${weblogic.targets}</targets>
                     <verbose>true</verbose>
                     <name>wlsdeployer</name>
                 </configuration>

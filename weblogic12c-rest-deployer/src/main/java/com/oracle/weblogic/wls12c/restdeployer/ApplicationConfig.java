@@ -1,13 +1,15 @@
 package com.oracle.weblogic.wls12c.restdeployer;
 
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
- *
+ * Configuration of the REST resources
+ * 
  * @author bruno.borges@oracle.com
  */
-@javax.ws.rs.ApplicationPath("rest")
+@ApplicationPath("rest")
 public class ApplicationConfig extends Application {
 
     @Override
